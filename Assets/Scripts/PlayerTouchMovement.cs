@@ -109,6 +109,7 @@ public class PlayerTouchMovement : MonoBehaviour
 
         Player.transform.LookAt(Player.transform.position + scaledMovement, Vector3.up);
         Player.Move(scaledMovement);
+        
     }
 
     private void OnGUI()
