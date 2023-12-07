@@ -31,6 +31,15 @@ public class PlayerTouchMovement : MonoBehaviour
         EnhancedTouchSupport.Disable();
     }
 
+    public float playerSpeed = 5.0f; // Define player movement speed
+
+    void MovePlayer(Vector2 direction)
+    {
+        // Assuming "player" is your GameObject or CharacterController
+        Player.transform.Translate(direction * playerSpeed * Time.deltaTime);
+        // Adjust "playerSpeed" according to your game's requirement
+    }
+
     private void HandleFingerMove(Finger MovedFinger)
     {
         if (MovedFinger == MovementFinger)
@@ -40,14 +49,13 @@ public class PlayerTouchMovement : MonoBehaviour
             ETouch.Touch currentTouch = MovedFinger.currentTouch;
 
             if (Vector2.Distance(
-                    currentTouch.screenPosition,
-                    Joystick.RectTransform.anchoredPosition
-                ) > maxMovement)
+                currentTouch.screenPosition,
+                Joystick.RectTransform.anchoredPosition
+            ) > maxMovement)
             {
                 knobPosition = (
                     currentTouch.screenPosition - Joystick.RectTransform.anchoredPosition
-                    ).normalized
-                    * maxMovement;
+                ).normalized * maxMovement;
             }
             else
             {
@@ -56,6 +64,9 @@ public class PlayerTouchMovement : MonoBehaviour
 
             Joystick.Knob.anchoredPosition = knobPosition;
             MovementAmount = knobPosition / maxMovement;
+
+            // Assuming you have a method to move the player based on MovementAmount
+            MovePlayer(MovementAmount);
         }
     }
 
