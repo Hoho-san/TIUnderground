@@ -21,6 +21,9 @@ public class PlayerTouchMovement : MonoBehaviour
         ETouch.Touch.onFingerDown += HandleFingerDown;
         ETouch.Touch.onFingerUp += HandleLoseFinger;
         ETouch.Touch.onFingerMove += HandleFingerMove;
+
+        Joystick.gameObject.SetActive(true);
+        Joystick.RectTransform.sizeDelta = JoystickSize;
     }
 
     private void OnDisable()
@@ -32,12 +35,28 @@ public class PlayerTouchMovement : MonoBehaviour
     }
 
     public float playerSpeed = 5.0f; // Define player movement speed
-
-    void MovePlayer(Vector2 direction)
+    /*
+     
+     void MovePlayer(Vector2 direction)
     {
         // Assuming "player" is your GameObject or CharacterController
         Player.transform.Translate(direction * playerSpeed * Time.deltaTime);
         // Adjust "playerSpeed" according to your game's requirement
+    }
+
+     */
+
+    void MovePlayer(Vector2 direction)
+    {
+        if (direction.magnitude < 0.1f)
+        {
+            // If the joystick is almost at rest, don't move
+            Player.velocity = Vector3.zero;
+            return;
+        }
+
+        direction.Normalize(); // Normalize the input to get consistent movement speed in all directions
+        Player.Move(direction * playerSpeed * Time.deltaTime);
     }
 
     private void HandleFingerMove(Finger MovedFinger)
@@ -67,6 +86,17 @@ public class PlayerTouchMovement : MonoBehaviour
 
             // Assuming you have a method to move the player based on MovementAmount
             MovePlayer(MovementAmount);
+
+            /////
+
+            if (MovementAmount.magnitude > 0.1f)
+            {
+                MovePlayer(MovementAmount);
+            }
+            else
+            {
+                MovePlayer(Vector2.zero);
+            }
         }
     }
 
